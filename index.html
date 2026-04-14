@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romantic Quiz Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Floating Hearts -->
+    <div class="heart" style="left: 10%; animation-duration: 8s;">❤️</div>
+    <div class="heart" style="left: 20%; animation-duration: 7s;">💖</div>
+    <div class="heart" style="left: 30%; animation-duration: 9s;">💕</div>
+    <div class="heart" style="left: 40%; animation-duration: 6s;">💗</div>
+    <div class="heart" style="left: 50%; animation-duration: 10s;">💓</div>
+    <div class="heart" style="left: 60%; animation-duration: 8s;">💘</div>
+    <div class="heart" style="left: 70%; animation-duration: 7s;">💝</div>
+    <div class="heart" style="left: 80%; animation-duration: 9s;">💞</div>
+    <div class="heart" style="left: 90%; animation-duration: 6s;">💟</div>
+
+    <!-- Main Container -->
+    <div class="container" id="gameContainer">
+        <!-- Step 0: Start Screen -->
+        <div id="step0">
+            <h1>คำถามง่ายๆจากขุน พี่เอิทธิ์(ชื่อชั้นเขียนงี้นะจร้ะ)</h1>
+            <p>พิสูจน์ความรรู้ใจของเธอดูสิ ถ้ากล้าก็ลองดู</p>
+            <button onclick="nextStep()">Start Game</button>
+        </div>
+
+        <!-- Step 1: Name Input -->
+        <div id="step1" class="hidden">
+            <h1>ชื่อเต็มชั้นชื่ออะไร</h1>
+            <p class="hint">กดเคาะวรรณวรรค 1 ครั้งก่อนพิมนาสกุล</p>
+            <input type="text" id="nameInput" placeholder="ชื่อของชั้นคืออะไร ตอบไม่ได้ละก็เดี๋ยวตีก้นเลย">
+            <button onclick="saveName()">ถัดไป</button>
+        </div>
+
+        <!-- Step 2: Favorite Foods -->
+        <div id="step2" class="hidden">
+            <h1>อาหารที่ชั้นชอบ</h1>
+            <p>เลือกมา ไม่งั้นไม่ให้ผ่าน</p>
+            <div class="options">
+                <label class="option"><input type="checkbox" value="พิซซ่า"> พิซซ่า (แพงไปไหม)</label>
+                <label class="option"><input type="checkbox" value="ช็อกโกแลต"> ช็อกโกแลต (ใครจะชอบว่ะ)</label>
+                <label class="option"><input type="checkbox" value="ไอศกรีม"> ไอศกรีม (ใครจะชอบว่ะ)</label>
+                <label class="option"><input type="checkbox" value="ขนมหนุบๆ"> ขนมหนุบๆ (ติดฟันอ่ะ)</label>
+                <label class="option"><input type="checkbox" value="ซูชิ"> ซูชิ (ของญี่ปุ่นอ่ะนอย)</label>
+            </div>
+            <button onclick="saveFoods()">ถัดไป</button>
+        </div>
+
+        <!-- Step 3: Personality Traits -->
+        <div id="step3" class="hidden">
+            <h1>ลักษณะบุคลิกเด่นๆของชั้น</h1>
+            <p>เลือกมา ไม่งั้นไม่ให้ผ่าน</p>
+            <div class="options">
+                <label class="option"><input type="checkbox" value="ใจดี"> ใจดี</label>
+                <label class="option"><input type="checkbox" value="ตลก"> ตลก</label>
+                <label class="option"><input type="checkbox" value="สายลุย"> สายลุย</label>
+                <label class="option"><input type="checkbox" value="โรแมนติก"> โรแมนติก</label>
+                <label class="option"><input type="checkbox" value="หน้าเข้มเกินไปเปล่าพี่">
+                    หน้าเข้มเกินไปเปล่าพี่</label>
+            </div>
+            <button onclick="saveTraits()">ถัดไป</button>
+        </div>
+
+        <!-- Step 4: What They Want -->
+        <div id="step4" class="hidden">
+            <h1>เธออยากได้อะไรจากฉัน</h1>
+            <p>ต้องมีคำว่ารักในประโยคด้วยนะ</p>
+            <input type="text" id="wantInput" placeholder="บอกมาไม่งั้นชั้นนอยจริงๆนะ (แคปให้ดูด้วยนะ)">
+            <button onclick="saveWant()">ถัดไป</button>
+        </div>
+
+        <!-- Step 5: Message from Heart -->
+        <div id="step5" class="hidden">
+            <h1>บอกรักหน่อยได้ไหม </h1>
+            <p>แล้วก็บอกอีกด้วยนะว่าทำไมถึงอยากร่วมชีวิตกับชั้น</p>
+            <p>ต้องมีคำว่ารักในประโยคด้วยนะ</p>
+            <input type="text" id="messageInput" placeholder="บอกมาไม่งั้นชั้นนอยจริงๆนะ (แคปให้ดูด้วยนะ)">
+            <button onclick="saveMessage()">เสร็จสิ้น</button>
+        </div>
+
+        <!-- Step 6: Image Screen -->
+        <div id="step6" class="hidden">
+            <h1>อ่านนะความในใจชั้นเอง</h1>
+            <img src="Pink & Cream Simple Love Letter.png" alt="รูปภาพพิเศษ">
+            <button onclick="nextStep()">ดำเนินการต่อ</button>
+        </div>
+
+        <!-- Step 7: Final Screen -->
+        <div id="step7" class="hidden">
+            <h1>ขอบคุณใจมากกกกก!</h1>
+            <p>คำตอบนี้พี่จะรับไว้นะ 💕</p>
+            <button onclick="restartGame()">เริ่มเกมใหม่</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
