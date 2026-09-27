@@ -1,104 +1,287 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Romantic Quiz Game</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>มาง้อแล้วค้าบ 🥺💖</title>
+    <!-- นำเข้าฟอนต์น่ารักๆ จาก Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-glow: #ff4d79;
+            --secondary-glow: #ff80ab;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body, html {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Mali', cursive;
+            background: linear-gradient(-45deg, #ff9a9e, #fecfef, #ffdde1, #ffc3a0, #ff9a9e);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            /* ป้องกันการซูมหรือเลื่อนหน้าจอเวลาแตะรัวๆ บนมือถือ */
+            touch-action: none; 
+        }
+
+        /* อนิเมชั่นพื้นหลังเปลี่ยนสี */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ข้อความหลักตรงกลางหน้าจอ */
+        .center-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            text-align: center;
+            width: 100%;
+            pointer-events: none; /* เพื่อให้ยังแตะทะลุไปโดนพื้นหลังได้ */
+        }
+
+        .main-text {
+            font-size: clamp(4rem, 15vw, 8rem);
+            color: white;
+            text-shadow: 
+                0 0 10px var(--primary-glow),
+                0 0 20px var(--primary-glow),
+                0 0 40px var(--primary-glow),
+                0 0 80px var(--secondary-glow);
+            animation: pulse 1.5s infinite alternate;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .sub-text {
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            color: #fff;
+            margin-top: 10px;
+            text-shadow: 0 0 10px #ff1493;
+            animation: bounce 2s infinite;
+        }
+
+        /* อนิเมชั่นข้อความตรงกลางเต้นตุ้บๆ */
+        @keyframes pulse {
+            0% { transform: scale(1); text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-glow); }
+            100% { transform: scale(1.15); text-shadow: 0 0 20px var(--primary-glow), 0 0 40px var(--primary-glow), 0 0 60px var(--secondary-glow); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        /* คลาสสำหรับข้อความที่ลอยขึ้น/ลงท่วมหน้าจอ */
+        .floater {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: bold;
+            pointer-events: none;
+            text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.5);
+            z-index: 10;
+            will-change: transform, opacity;
+        }
+
+        /* คลาสสำหรับข้อความที่ระเบิดตอนแตะหน้าจอ */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            font-weight: bold;
+            z-index: 200;
+            text-shadow: 0 0 5px #fff, 0 0 15px #ff1493;
+            /* ใช้ CSS variable มารับค่าพิกัด x, y เพื่อระเบิดกระจายออกไป */
+            --dx: 0px;
+            --dy: 0px;
+            animation: explodeAnim 0.8s ease-out forwards;
+        }
+
+        @keyframes explodeAnim {
+            0% {
+                transform: translate(0, 0) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--dx), var(--dy)) scale(1.5) rotate(var(--rot));
+                opacity: 0;
+            }
+        }
+        
+        /* เพิ่มคำแนะนำให้แตะหน้าจอ */
+        .tap-hint {
+            position: absolute;
+            bottom: 5%;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            z-index: 150;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            animation: pulseHint 2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulseHint {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+    </style>
 </head>
-
 <body>
-    <!-- Floating Hearts -->
-    <div class="heart" style="left: 10%; animation-duration: 8s;">❤️</div>
-    <div class="heart" style="left: 20%; animation-duration: 7s;">💖</div>
-    <div class="heart" style="left: 30%; animation-duration: 9s;">💕</div>
-    <div class="heart" style="left: 40%; animation-duration: 6s;">💗</div>
-    <div class="heart" style="left: 50%; animation-duration: 10s;">💓</div>
-    <div class="heart" style="left: 60%; animation-duration: 8s;">💘</div>
-    <div class="heart" style="left: 70%; animation-duration: 7s;">💝</div>
-    <div class="heart" style="left: 80%; animation-duration: 9s;">💞</div>
-    <div class="heart" style="left: 90%; animation-duration: 6s;">💟</div>
 
-    <!-- Main Container -->
-    <div class="container" id="gameContainer">
-        <!-- Step 0: Start Screen -->
-        <div id="step0">
-            <h1>คำถามง่ายๆจากขุน พี่เอิทธิ์(ชื่อชั้นเขียนงี้นะจร้ะ)</h1>
-            <p>พิสูจน์ความรรู้ใจของเธอดูสิ ถ้ากล้าก็ลองดู</p>
-            <button onclick="nextStep()">Start Game</button>
-        </div>
+    <!-- คอนเทนเนอร์หลักสำหรับปั้มข้อความลอยท่วมจอ -->
+    <div id="flooder-container"></div>
 
-        <!-- Step 1: Name Input -->
-        <div id="step1" class="hidden">
-            <h1>ชื่อเต็มชั้นชื่ออะไร</h1>
-            <p class="hint">กดเคาะวรรณวรรค 1 ครั้งก่อนพิมนาสกุล</p>
-            <input type="text" id="nameInput" placeholder="ชื่อของชั้นคืออะไร ตอบไม่ได้ละก็เดี๋ยวตีก้นเลย">
-            <button onclick="saveName()">ถัดไป</button>
-        </div>
-
-        <!-- Step 2: Favorite Foods -->
-        <div id="step2" class="hidden">
-            <h1>อาหารที่ชั้นชอบ</h1>
-            <p>เลือกมา ไม่งั้นไม่ให้ผ่าน</p>
-            <div class="options">
-                <label class="option"><input type="checkbox" value="พิซซ่า"> พิซซ่า (แพงไปไหม)</label>
-                <label class="option"><input type="checkbox" value="ช็อกโกแลต"> ช็อกโกแลต (ใครจะชอบว่ะ)</label>
-                <label class="option"><input type="checkbox" value="ไอศกรีม"> ไอศกรีม (ใครจะชอบว่ะ)</label>
-                <label class="option"><input type="checkbox" value="ขนมหนุบๆ"> ขนมหนุบๆ (ติดฟันอ่ะ)</label>
-                <label class="option"><input type="checkbox" value="ซูชิ"> ซูชิ (ของญี่ปุ่นอ่ะนอย)</label>
-            </div>
-            <button onclick="saveFoods()">ถัดไป</button>
-        </div>
-
-        <!-- Step 3: Personality Traits -->
-        <div id="step3" class="hidden">
-            <h1>ลักษณะบุคลิกเด่นๆของชั้น</h1>
-            <p>เลือกมา ไม่งั้นไม่ให้ผ่าน</p>
-            <div class="options">
-                <label class="option"><input type="checkbox" value="ใจดี"> ใจดี</label>
-                <label class="option"><input type="checkbox" value="ตลก"> ตลก</label>
-                <label class="option"><input type="checkbox" value="สายลุย"> สายลุย</label>
-                <label class="option"><input type="checkbox" value="โรแมนติก"> โรแมนติก</label>
-                <label class="option"><input type="checkbox" value="หน้าเข้มเกินไปเปล่าพี่">
-                    หน้าเข้มเกินไปเปล่าพี่</label>
-            </div>
-            <button onclick="saveTraits()">ถัดไป</button>
-        </div>
-
-        <!-- Step 4: What They Want -->
-        <div id="step4" class="hidden">
-            <h1>เธออยากได้อะไรจากฉัน</h1>
-            <p>ต้องมีคำว่ารักในประโยคด้วยนะ</p>
-            <input type="text" id="wantInput" placeholder="บอกมาไม่งั้นชั้นนอยจริงๆนะ (แคปให้ดูด้วยนะ)">
-            <button onclick="saveWant()">ถัดไป</button>
-        </div>
-
-        <!-- Step 5: Message from Heart -->
-        <div id="step5" class="hidden">
-            <h1>บอกรักหน่อยได้ไหม </h1>
-            <p>แล้วก็บอกอีกด้วยนะว่าทำไมถึงอยากร่วมชีวิตกับชั้น</p>
-            <p>ต้องมีคำว่ารักในประโยคด้วยนะ</p>
-            <input type="text" id="messageInput" placeholder="บอกมาไม่งั้นชั้นนอยจริงๆนะ (แคปให้ดูด้วยนะ)">
-            <button onclick="saveMessage()">เสร็จสิ้น</button>
-        </div>
-
-        <!-- Step 6: Image Screen -->
-        <div id="step6" class="hidden">
-            <h1>อ่านนะความในใจชั้นเอง</h1>
-            <img src="Pink & Cream Simple Love Letter.png" alt="รูปภาพพิเศษ">
-            <button onclick="nextStep()">ดำเนินการต่อ</button>
-        </div>
-
-        <!-- Step 7: Final Screen -->
-        <div id="step7" class="hidden">
-            <h1>ขอบคุณใจมากกกกก!</h1>
-            <p>คำตอบนี้พี่จะรับไว้นะ 💕</p>
-            <button onclick="restartGame()">เริ่มเกมใหม่</button>
-        </div>
+    <!-- ข้อความกลางหน้าจอ (ดีกันนะ) -->
+    <div class="center-container">
+        <div class="main-text">ดีกันนะ 🥺</div>
+        <div class="sub-text">มาง้อแล้ววววววว 💖</div>
     </div>
+    
+    <div class="tap-hint">👇 แตะรัวๆ ที่หน้าจอเลย 👇</div>
 
-    <script src="script.js"></script>
+    <script>
+        // ชุดคำกวนๆ น่ารักๆ และอีโมจิที่จะให้ลอยเต็มจอ
+        const texts = [
+            "มาง้อแล้ว!", "ดีกันนะ", "ขอโทษค้าบ", "รักน้า", "❤️", "💖", "💕", "🥺", "😭", 
+            "หายงอนเถอะ", "คนดีของเค้า", "โอ๋ๆ", "ไม่โกรธน้า", "ยอมแล้ว", "รักที่สุด", "จุ๊บๆ 😘", "✨"
+        ];
+
+        // ชุดคำสำหรับตอนกดระเบิด (Burst)
+        const burstTexts = ["ง้อนะ!", "รัก!", "💖", "จึ๋ยย", "ตู้ม!", "ปิ้วๆ", "😍", "ขอโทษษษ"];
+
+        const flooderContainer = document.getElementById('flooder-container');
+
+        // ฟังก์ชันสุ่มค่าตัวเลข
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        // ฟังก์ชันสร้างข้อความลอย 1 ตัว
+        function spawnFlooder() {
+            const el = document.createElement('div');
+            el.className = 'floater';
+            
+            // สุ่มข้อความ
+            el.innerText = texts[Math.floor(Math.random() * texts.length)];
+            
+            // สุ่มขนาดฟอนต์ (เล็กสลับใหญ่ให้ดูมีมิติ)
+            const fontSize = random(1.5, 4);
+            el.style.fontSize = `${fontSize}rem`;
+            
+            // สุ่มตำแหน่ง X (แนวนอน) 0 ถึง 100vw
+            el.style.left = `${random(-5, 95)}vw`;
+            
+            // สุ่มสี (ชมพู, แดง, ขาว)
+            const colors = ['#ff4d79', '#ff1493', '#fff', '#ff69b4', '#ffb6c1'];
+            el.style.color = colors[Math.floor(Math.random() * colors.length)];
+            
+            // สุ่มว่าจะลอยขึ้น หรือ ลอยลง
+            const isFloatingUp = Math.random() > 0.5;
+            const startY = isFloatingUp ? '110vh' : '-10vh';
+            const endY = isFloatingUp ? '-10vh' : '110vh';
+            
+            // สุ่มระยะเวลาลอย (ความเร็ว)
+            const duration = random(3, 7);
+            
+            el.style.top = startY;
+            
+            // ใช้ Web Animations API เพื่อประสิทธิภาพที่ดีบนมือถือ
+            const animation = el.animate([
+                { top: startY, transform: `rotate(${random(-30, 30)}deg) scale(0.8)`, opacity: 0 },
+                { opacity: 1, offset: 0.1 },
+                { opacity: 1, offset: 0.9 },
+                { top: endY, transform: `rotate(${random(-90, 90)}deg) scale(1.2)`, opacity: 0 }
+            ], {
+                duration: duration * 1000,
+                easing: 'linear'
+            });
+
+            flooderContainer.appendChild(el);
+
+            // ลบทิ้งเมื่อลอยเสร็จเพื่อไม่ให้รกเครื่อง (ลด Lag)
+            animation.onfinish = () => {
+                el.remove();
+            };
+        }
+
+        // ทำให้ข้อความปั้มออกมาเรื่อยๆ รัวๆ (ทุกๆ 80 มิลลิวินาที = ท่วมจอแน่นอน)
+        let floodInterval = setInterval(spawnFlooder, 80);
+
+        // ตอนเริ่มให้ปั้มออกมาก่อนเลย 50 ตัว จะได้ท่วมทันทีที่เปิดเว็บ
+        for(let i=0; i<50; i++) {
+            setTimeout(spawnFlooder, random(0, 2000));
+        }
+
+        // ฟังก์ชันสร้างเอฟเฟกต์ระเบิดเมื่อแตะหน้าจอ
+        function createExplosion(x, y) {
+            // จำนวน particle ต่อการกด 1 ครั้ง (ยิ่งเยอะยิ่งเวอร์)
+            const particleCount = random(12, 20); 
+            
+            for (let i = 0; i < particleCount; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.innerText = burstTexts[Math.floor(Math.random() * burstTexts.length)];
+                
+                // เริ่มต้นที่จุดที่นิ้วแตะ
+                p.style.left = `${x}px`;
+                p.style.top = `${y}px`;
+                
+                // สุ่มสี
+                const colors = ['#fff', '#ff1493', '#ffff00', '#ff00ff', '#00ffff'];
+                p.style.color = colors[Math.floor(Math.random() * colors.length)];
+                p.style.fontSize = `${random(1, 3)}rem`;
+                
+                // คำนวณทิศทางกระจายออกเป็นวงกลม (ใช้ตรีโกณมิติ)
+                const angle = random(0, Math.PI * 2);
+                const velocity = random(50, 250); // ระยะความไกลของการกระเด็น
+                
+                const dx = Math.cos(angle) * velocity;
+                const dy = Math.sin(angle) * velocity;
+                
+                // ส่งค่าพิกัดไปให้ CSS Animations
+                p.style.setProperty('--dx', `${dx}px`);
+                p.style.setProperty('--dy', `${dy}px`);
+                p.style.setProperty('--rot', `${random(-360, 360)}deg`);
+                
+                document.body.appendChild(p);
+                
+                // ลบทิ้งหลังระเบิดเสร็จ
+                setTimeout(() => {
+                    p.remove();
+                }, 800);
+            }
+            
+            // แถม: ทุกครั้งที่กด จะแอบเพิ่มความเร็วในการท่วมหน้าจอแว้บสั้นๆ!
+            clearInterval(floodInterval);
+            floodInterval = setInterval(spawnFlooder, 20); // เร็วจัดๆ
+            setTimeout(() => {
+                clearInterval(floodInterval);
+                floodInterval = setInterval(spawnFlooder, 80); // กลับมาปกติ
+            }, 500);
+        }
+
+        // ดักจับเหตุการณ์การกดหรือแตะหน้าจอ (รองรับทั้งเมาส์และมือถือ)
+        window.addEventListener('pointerdown', (e) => {
+            // ป้องกันพฤติกรรมดั้งเดิมของเบราว์เซอร์ เช่น การ select text หรือ double-tap zoom
+            e.preventDefault(); 
+            createExplosion(e.clientX, e.clientY);
+        });
+
+    </script>
 </body>
-
 </html>
